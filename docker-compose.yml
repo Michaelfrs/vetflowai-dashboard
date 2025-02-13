@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  vetflowai_dashboard:
+    container_name: vetflowai_dashboard
+    image: node:20
+    working_dir: /app
+    volumes:
+      - .:/app  # Persist project files
+      - /app/node_modules  # Prevents conflicts with local node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host"
+    restart: unless-stopped  # Ensures persistence across reboots
