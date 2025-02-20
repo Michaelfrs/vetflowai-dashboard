@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   vetflowai_dashboard:
     container_name: vetflowai_dashboard

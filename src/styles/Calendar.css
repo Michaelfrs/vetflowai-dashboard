@@ -1,0 +1,20 @@
+/* Calendar.css */
+.calendar-container {
+    margin-left: 270px; /* Moves content to the right to make space for sidebar */
+    padding: 20px;
+    max-width: 90%;
+}
+
+.rbc-calendar {
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rbc-event {
+    background-color: #3182ce !important; /* Blue color for events */
+    color: white !important;
+    border-radius: 4px;
+    padding: 5px;
+}
