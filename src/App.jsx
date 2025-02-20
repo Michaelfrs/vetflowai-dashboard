@@ -1,17 +1,18 @@
 import React from "react";
 import Sidebar from "./components/Sidebar";
-import CalendarComponent from "./components/Calendar"; // Import the new calendar
+import CalendarComponent from "./components/Calendar";
+import "./styles/App.css";
+
 
 function App() {
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="app-container"> {/* Apply flex layout */}
             <Sidebar />
-            <main className="flex-1 p-8">
-                <h1 className="text-4xl font-bold text-gray-800">VetFlowAI Dashboard</h1>
-                <p className="text-lg text-gray-600 mt-2">
-                    This is where your main app content will go.
-                </p>
-                <CalendarComponent /> {/* Add the calendar here */}
+            <main className="main-content">
+                <h1>VetFlowAI Dashboard</h1>
+                <p>This is where your main app content will go.</p>
+                <h2>Appointment Calendar</h2>
+                <CalendarComponent />
             </main>
         </div>
     );
