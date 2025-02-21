@@ -1,12 +1,15 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const AppointmentSchema = new mongoose.Schema({
-    clientName: { type: String, required: true },
     petName: { type: String, required: true },
+    ownerName: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
+    email: { type: String },
     date: { type: Date, required: true },
     time: { type: String, required: true },
-    contactNumber: { type: String, required: true },
-    reminderSent: { type: Boolean, default: false },
+    reason: { type: String },
+    status: { type: String, enum: ["Scheduled", "Completed", "Cancelled"], default: "Scheduled" },
+    createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Appointment', AppointmentSchema);
+export default mongoose.model("Appointment", AppointmentSchema);
