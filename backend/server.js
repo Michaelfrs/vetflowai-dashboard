@@ -5,6 +5,10 @@ import cors from "cors";
 import twilio from "twilio";
 import Appointment from "./models/Appointment.js";
 import ConsentForm from "./models/ConsentForm.js";
+import walkInRoutes from "./routes/walkin.js"; // Import Walk-in Routes
+import WalkIn from "./models/WalkIn.js";  // Correct path inside backend
+
+app.use("/walkin", walkInRoutes); // Mount walk-in routes
 
 dotenv.config(); // Load environment variables
 
