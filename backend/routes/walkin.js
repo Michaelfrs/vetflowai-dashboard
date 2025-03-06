@@ -14,4 +14,15 @@ router.post("/", async (req, res) => {
     }
 });
 
+// Get all Walk-ins
+router.get("/", async (req, res) => {
+    try {
+        const walkIns = await WalkIn.find();
+        res.json(walkIns);
+    } catch (err) {
+        res.status(500).json({ error: "Failed to fetch walk-ins", details: err });
+    }
+});
+
+
 export default router;
