@@ -1,13 +1,20 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const MONGO_URI = "mongodb+srv://michael:VetFlowAINew2025@vetflowai-db.mongodb.net/vetflowai-backend?retryWrites=true&w=majority";
+dotenv.config(); // Load environment variables
+
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+    throw new Error("❌ MongoDB URI is missing from environment variables!");
+}
 
 mongoose.connect(MONGO_URI)
     .then(() => {
         console.log("✅ Connected to MongoDB!");
-        process.exit();
     })
     .catch((err) => {
         console.error("❌ MongoDB Connection Error:", err);
-        process.exit(1);
+        // Instead of exiting, throw an error so it can be handled by the app
+        throw new Error("Database connection failed.");
     });

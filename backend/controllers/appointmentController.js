@@ -1,10 +1,14 @@
-const Appointment = require('../models/Appointment');
-const twilio = require('twilio');
-require('dotenv').config();
+import Appointment from '../models/Appointment.js';
+import twilio from 'twilio';
+import dotenv from 'dotenv';
+import process from 'process';
+
+dotenv.config();
+
 
 const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
-exports.createAppointment = async (req, res) => {
+export const createAppointment = async (req, res) => {
     try {
         const appointment = new Appointment(req.body);
         await appointment.save();
@@ -14,7 +18,7 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
-exports.getAppointments = async (req, res) => {
+export const getAppointments = async (req, res) => {
     try {
         const appointments = await Appointment.find();
         res.status(200).json({ success: true, data: appointments });
@@ -23,7 +27,7 @@ exports.getAppointments = async (req, res) => {
     }
 };
 
-exports.sendReminder = async (req, res) => {
+export const sendReminder = async (req, res) => {
     try {
         const appointment = await Appointment.findById(req.params.id);
         if (!appointment) {

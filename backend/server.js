@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -7,8 +9,6 @@ import twilio from "twilio";
 import walkInRoutes from "./routes/walkin.js";
 import Appointment from "./models/Appointment.js";
 import ConsentForm from "./models/ConsentForm.js";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -28,11 +28,9 @@ mongoose
     console.error("❌ MongoDB connection error:", err);
   });
 
-app.use("/api/walkins", walkInRoutes);
-
 // ✅ Add a global error handler for unexpected errors
-app.use((err, req, res, next) => {
-  console.error("Unhandled Error:", err);
+app.use((err, req, res,) => {
+  console.error("Unhandled Error:", err.stack || err);
   res.status(500).json({ error: "Internal Server Error", details: err.message });
 });
 
@@ -68,8 +66,9 @@ app.get("/api/appointments", async (req, res) => {
     try {
         const appointments = await Appointment.find();
         res.json(appointments);
-    } catch (err) {
-        res.status(500).json({ error: "Error fetching appointments" });
+    } catch (error) {  
+        console.error("Error fetching appointments:", error);  // ✅ Logs error for debugging
+        res.status(500).json({ error: "Error fetching appointments", details: error.message });
     }
 });
 
@@ -79,28 +78,34 @@ app.get("/api/appointments/:id", async (req, res) => {
         const appointment = await Appointment.findById(req.params.id);
         if (!appointment) return res.status(404).json({ error: "Appointment not found" });
         res.json(appointment);
-    } catch (err) {
-        res.status(500).json({ error: "Error fetching appointment" });
+    } catch (error) {
+        res.status(500).json({ error: "Error fetching appointment", details: error.message });
     }
 });
 
 // 📌 Update an appointment
 app.put("/api/appointments/:id", async (req, res) => {
     try {
-        const appointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        res.json(appointment);
-    } catch (err) {
-        res.status(500).json({ error: "Error updating appointment" });
+        const appointment = await Appointment.findById(req.params.id);
+        if (!appointment) return res.status(404).json({ error: "Appointment not found" });
+
+        const updatedAppointment = await Appointment.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json(updatedAppointment);
+    } catch (error) {
+        res.status(500).json({ error: "Error updating appointment", details: error.message });
     }
 });
 
 // 📌 Delete an appointment
 app.delete("/api/appointments/:id", async (req, res) => {
     try {
+        const appointment = await Appointment.findById(req.params.id);
+        if (!appointment) return res.status(404).json({ error: "Appointment not found" });
+
         await Appointment.findByIdAndDelete(req.params.id);
         res.json({ message: "Appointment deleted" });
-    } catch (err) {
-        res.status(500).json({ error: "Error deleting appointment" });
+    } catch (error) {
+        res.status(500).json({ error: "Error deleting appointment", details: error.message });
     }
 });
 
@@ -116,7 +121,7 @@ app.post("/api/send-sms", async (req, res) => {
 
         await client.messages.create({
             body: message,
-            from: process.env.TWILIO_PHONE_NUMBER,
+            from: twilioNumber,
             to: phone
         });
 
@@ -136,8 +141,9 @@ app.post("/api/consent-form", async (req, res) => {
         const consent = new ConsentForm(req.body);
         await consent.save();
         res.status(201).json(consent);
-    } catch (err) {
-        res.status(500).json({ error: "Error submitting consent form" });
+    } catch (error) {  // ✅ Changed `err` to `error`
+        console.error("Error submitting consent form:", error);  // ✅ Logs error for debugging
+        res.status(500).json({ error: "Error submitting consent form", details: error.message });
     }
 });
 
@@ -146,9 +152,11 @@ app.get("/api/consent-form/:id", async (req, res) => {
     try {
         const consent = await ConsentForm.findById(req.params.id);
         if (!consent) return res.status(404).json({ error: "Consent form not found" });
+
         res.json(consent);
-    } catch (err) {
-        res.status(500).json({ error: "Error retrieving consent form" });
+    } catch (error) {  // ✅ Changed `err` to `error`
+        console.error("Error retrieving consent form:", error);  // ✅ Logs error for debugging
+        res.status(500).json({ error: "Error retrieving consent form", details: error.message });
     }
 });
 
